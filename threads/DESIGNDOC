@@ -30,13 +30,49 @@ Taiga Ishida <taigaish@buffalo.edu>
 >> `struct' member, global or static variable, `typedef', or
 >> enumeration.  Identify the purpose of each in 25 words or less.
 
+/*
+
+We create a new field within the thread struct/TCB that holds a reason for why a thread is blocked; we'll call
+it "enum thread_block_reason":
+
+enum thread_block_reason{
+
+	BLOCK_REASON_SLEEP = 0,
+	BLOCK_REASON_OTHER,
+};
+
+The existing "thread_status" enum will indicate whenever the thread is blocked while its value is THREAD_BLOCKED.
+
+
+
+*/
+
 ---- ALGORITHMS ----
 
 >> A2: Briefly describe what happens in a call to timer_sleep(),
 >> including the effects of the timer interrupt handler.
 
+/*
+
+In our new timer_sleep implementation, we prepare the currently-executing thread to go to sleep by
+first setting the thread_status to THREAD_BLOCKED and then setting the reason for the thread block
+to BLOCK_REASON_SLEEPING. We then specify the sleep time of the thread to be equal to the value of
+"ticks" and then supply a pointer to the thread into our container of sleeping threads.
+
+*/
+
 >> A3: What steps are taken to minimize the amount of time spent in
 >> the timer interrupt handler?
+
+/*
+
+The scheduling scheme we have devised involves storing all threads that are to sleep in a container
+and sorting them by their desired sleep time, from shortest to longest time. From there, the scheduler
+can select the next thread to run which has the shortest sleep time, by checking the first element of
+the container. By contrast, if the container is empty, no threads are sleeping and waiting to be woken
+up. Once sorted, these checks can be done quickly in O(1) time.
+
+*/
 
 ---- SYNCHRONIZATION ----
 
