@@ -9,7 +9,7 @@
 >> Fill in the names and email addresses of your group members.
 
 Jaimeen Ahn <jahn5@buffalo.edu>
-Christopher Pei <capei@buffalo.edu>, <capei208@gmail.com>
+Christopher Pei <capei208@gmail.com>, <capei@buffalo.edu>
 Taiga Ishida <taigaish@buffalo.edu>
 
 ---- PRELIMINARIES ----
@@ -150,7 +150,16 @@ to be less efficient overall.
 
 /*
 
+For our priority scheduling implementation, which must handle priority donation for threads and locks, we will
+have to keep track of several pieces of information, including start/original priorities, donations, inherited
+priorities, a lock to keep track of any applicable lock that the thread may or may not be waiting on, ... [TODO]
 
+thread.h
+-------------
+
+int priority;				/* Start/original priority of the thread. */
+struct list donations;			/* Locks this thread has that others are waiting for. */
+struct list inherited_priorities;	/* Priorities inherited from donations. */
 
 */
 
