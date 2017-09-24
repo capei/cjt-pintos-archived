@@ -97,7 +97,9 @@ The scheduling scheme we have devised involves storing all threads that are to s
 and sorting them by their desired sleep time, from shortest to longest. From there, the scheduler
 can select the next thread to run which has the shortest sleep time, by checking the first element of
 the container. By contrast, if the container is empty, no threads are sleeping and waiting to be woken
-up. Once sorted, these checks can be done efficiently in O(1) time.
+up. By this design, the time_interrupt handler traverses a container containing only sleeping threads,
+and needs only to check one item (which is the first) in the list, making it an operation computable
+in O(1) time.
 
 */
 
@@ -108,7 +110,8 @@ up. Once sorted, these checks can be done efficiently in O(1) time.
 
 /*
 
-
+Prior to any critical sections in our design, such as our container of sleeping threads, interrupts are
+to be disabled so as to prevent such race conditions.
 
 */
 
@@ -117,7 +120,9 @@ up. Once sorted, these checks can be done efficiently in O(1) time.
 
 /*
 
-
+Within the timer_sleep method, we will be disabling interrupts immediately prior to all critical sections,
+such as the timer_sleep() call. And since interrupts are disabled, it is not possible for any other interrupt
+to take place.
 
 */
 
@@ -128,7 +133,9 @@ up. Once sorted, these checks can be done efficiently in O(1) time.
 
 /*
 
-
+Taking into account discussions from lectures and recitations, we decided that this design seemed to be the
+simplest yet most efficient way for this task, as any distant other possibilities that we could think of seemed
+to be less efficient overall.
 
 */
 
