@@ -179,8 +179,11 @@ struct list inherited_priorities;	/* Priorities inherited from donations. */
 >> a lock, semaphore, or condition variable wakes up first?
 
 /*
-
-
+The way that makes sure the highest priority thread comes first is that puts the threads in ready_list with order.
+Also, we should wake the thread with the highest priority up which in waiting list.
+While waiting in the list, we have to consider about some possibilities to change priority of threads.
+Prior to switching to waiting, we should make the order by defining new funtion about the comparing priorities.
+By using a function named list_insert_ordered() which is in lib/list.h, we can put threads in waiting list with particular order.
 
 */
 
