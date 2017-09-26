@@ -12,9 +12,6 @@ Jaimeen Ahn <jahn5@buffalo.edu>
 Christopher Pei <capei208@gmail.com>, <capei@buffalo.edu>
 Taiga Ishida <taigaish@buffalo.edu>
 
-[Rebased recently to modify error in old commit message; this caused timestamp of all subsequent commits to
-be recalculated, making it look like we did it all during class... Oops! lol]
-
 ---- PRELIMINARIES ----
 
 >> If you have any preliminary comments on your submission, notes for the
@@ -172,6 +169,21 @@ struct list inherited_priorities;	/* Priorities inherited from donations. */
 
 /*
 
+To solve priority inversion, we will use a skill called priority donation.
+
+We declare the linked list donations to track priority donation.
+If there is threads with low priority([low]) holds the lock to execute higher one.
+The status of donations will change NULL to [low].
+Donations : [low] (High) -> NULL
+After that threads with middle priority([mid]) needs priority donation.
+Then the head of list will be changed to the [mid] and the tail of [mid] points [low]
+Donations : [mid] (High) -> [low] (High) -> NULL
+
+When the necessary of threads with lower priority is done, we can erase them in the list.
+then the donaitons will be changed like this.
+Donations : [low] -> NULL
+
+The reason why we choose the linked list to track priority is it is easy to insert, delete, and sort.
 
 
 */
@@ -182,8 +194,11 @@ struct list inherited_priorities;	/* Priorities inherited from donations. */
 >> a lock, semaphore, or condition variable wakes up first?
 
 /*
-
-
+The way that makes sure the highest priority thread comes first is that puts the threads in ready_list with order.
+Also, we should wake the thread with the highest priority up which in waiting list.
+While waiting in the list, we have to consider about some possibilities to change priority of threads.
+Prior to switching to waiting, we should make the order by defining new funtion about the comparing priorities.
+By using a function named list_insert_ordered() which is in lib/list.h, we can put threads in waiting list with particular order.
 
 */
 
@@ -192,6 +207,12 @@ struct list inherited_priorities;	/* Priorities inherited from donations. */
 
 /*
 
+First, if there is no holder for lock, the current thread becomes a new holder for lock.
+
+Second, if the priority of thread in waiting on a lock is bigger than the lock holder's
+priority donation will occur. The priority of lock holder's = the priority of thread in waiting list temporarily.
+Then, put original priority to the list inherited_priorities.
+The thread on waiting becomes new holder of lock, and the process run recurssively until the priority donation is no need to be happended.
 
 
 */
@@ -201,6 +222,11 @@ struct list inherited_priorities;	/* Priorities inherited from donations. */
 
 /*
 
+First, We will remove the lock on the list of elements which is locked. 
+Second, get the priority of the removed thread from the list named inherited_priorities which we declared.
+After recovering the original priority of thread, erase it from inherited_priorities.
+Then we should find the highest priority in the donations after removing current thread.
+The highest priority gets the lock.
 
 
 */
@@ -213,6 +239,10 @@ struct list inherited_priorities;	/* Priorities inherited from donations. */
 
 /*
 
+While priority donation occured, we have to change the priority of threads by using thread_set_priority() which the interrupt might happens.
+If we change it everytime when the priority donation occurs, the changed priority might turn out to be useless.
+So, to avoid this circumstance, we should calculate all of potential priority of threads which is expected to be part of priority donation.
+Using the maxium priority from result of calculating can aviod the race.
 
 
 */
@@ -225,6 +255,11 @@ struct list inherited_priorities;	/* Priorities inherited from donations. */
 /*
 
 
+Before priority donation, the object of priority scheduling is to execute threads with priority order.
+Therefore, we cannot help finding the highest priority in waiting list to acheive goal of this scheduling.
+Even in priority donation, finding the highest priority is virtual after releasing the lock.
+That is why we choose this design, the linked list, because it is easy to sort.
+Comparing it with stack and queue, they are also easy to add/drop in regular sequence but they are hard to sort by priority levels.
 
 */
 			  ADVANCED SCHEDULER
