@@ -160,7 +160,7 @@ thread.h
 int priority;				/* Start/original priority of the thread. */
 struct list donations;			/* Locks this thread has that others are waiting for. */
 struct list inherited_priorities;	/* Priorities inherited from donations. */
-struct lock l;				/* Lock that thread is waiting on (null if none). */
+struct lock *l;				/* Pointer to the lock that thread is waiting on (null if none). */
 
 */
 
@@ -309,7 +309,7 @@ ticks   A   B   C   A   B   C   to run
 
 /*
 
-yes, you could not tell which process goes first if multiple threads have equal priority. 
+Yes, you could not tell which process goes first if multiple threads have equal priority. 
 We ran the threads using round robin scheduling to fix this.
 
 
@@ -333,11 +333,14 @@ If most of the computation is done within the interrupt handler it could slow do
 >> time to work on this part of the project, how might you choose to
 >> refine or improve your design?
 
+/*
+
 Advantages - easy implementation since we are using linked lists.
 
 Disadvatanges - it might be slower since we are using linkedlist instead of other
 more faster datatypes.
 
+*/
 
 >> C6: The assignment explains arithmetic for fixed-point math in
 >> detail, but it leaves it open to you to implement it.  Why did you
@@ -346,8 +349,11 @@ more faster datatypes.
 >> type and/or a set of functions or macros to manipulate fixed-point
 >> numbers, why did you do so?  If not, why not?
 
-We decided to make a separate file that hosts the formuals given to us in the documents. 
+/*
 
+We decided to make a separate file that hosts the formulas given to us in the documents. 
+
+*/
 
 
 			   SURVEY QUESTIONS
