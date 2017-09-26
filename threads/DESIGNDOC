@@ -291,16 +291,16 @@ Inside thread.c we added a global variable for load_avg which stores the load av
 timer  recent_cpu    priority   thread
 ticks   A   B   C   A   B   C   to run
 -----  --  --  --  --  --  --   ------
- 0      0   1   2  63  61  59   A
- 4      4   1   2  62  61  59   A
- 8      
-12
-16
-20
-24
-28
-32
-36
+ 0      0   0   0  63  61  59   A
+ 4      4   0   0  62  61  59   A
+ 8      8   0   0  61  61  59   B
+12      8   4   0  61  60  59   A
+16      12  4   0  60  60  59   B
+20      12  8   0  60  59  59   A
+24      16  8   0  59  59  59   C
+28      16  8   4  59  59  58   B
+32      16  12  4  59  58  58   A
+36      20  12  4  58  58  58   C
 
 >> C3: Did any ambiguities in the scheduler specification make values
 >> in the table uncertain?  If so, what rule did you use to resolve
@@ -308,6 +308,8 @@ ticks   A   B   C   A   B   C   to run
 
 /*
 
+yes, you could not tell which process goes first if multiple threads have equal priority. 
+We ran the threads using round robin scheduling to fix this.
 
 
 */
@@ -316,6 +318,8 @@ ticks   A   B   C   A   B   C   to run
 >> inside and outside interrupt context likely to affect performance?
 
 /*
+
+If most of the computation is done within the interrupt handler it could slow down performance.
 
 
 
@@ -328,6 +332,10 @@ ticks   A   B   C   A   B   C   to run
 >> time to work on this part of the project, how might you choose to
 >> refine or improve your design?
 
+Advantages - easy implementation since we are using linked lists.
+
+Disadvatanges - it might be slower since we are using linkedlist instead of other
+more faster datatypes.
 
 
 >> C6: The assignment explains arithmetic for fixed-point math in
@@ -337,7 +345,7 @@ ticks   A   B   C   A   B   C   to run
 >> type and/or a set of functions or macros to manipulate fixed-point
 >> numbers, why did you do so?  If not, why not?
 
-we decided to make a header file that uses the formuals given to us int he documents. 
+We decided to make a separate file that hosts the formuals given to us in the documents. 
 
 
 
