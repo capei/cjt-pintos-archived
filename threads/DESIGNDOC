@@ -273,21 +273,13 @@ Comparing it with stack and queue, they are also easy to add/drop in regular seq
 
 /*
 
+Inside thread.h we decided to add variables within the thread struct to help with advanced scheduling
 
-thread_get_nice(void); /*   return the nice value of the current thread */
+int nice; this will store the nice value of a thread
 
-thread_set_nice(int); /*    sets a new nice value for the current thread and recalculates priority based on the new nice value */
+int recent_cpu; this will store the recent cpu value of a thread
 
-priority = PRI_MAX - (recent_cpu / 4) - (nice * 2); /*  this should be the new value used to calclate priority */ 
-
-thread_get_recent_cpu (void); /* this should calculate the recent cpu for current thread */
-    recent_cpu = (2*load_avg)/(2*load_avg + 1) * recent_cpu + nice;
-
-
-thread_get_load_avg (void); /* this should calculate load avg time for the current thread */
-    load_avg = (59/60)*load_avg + (1/60)*ready_threads;
-
-*/
+Inside thread.c we added a global variable for load_avg which stores the load avg of a thread. 
 
 ---- ALGORITHMS ----
 
@@ -299,9 +291,9 @@ thread_get_load_avg (void); /* this should calculate load avg time for the curre
 timer  recent_cpu    priority   thread
 ticks   A   B   C   A   B   C   to run
 -----  --  --  --  --  --  --   ------
- 0      0   0   0  63  61  59   A
- 4      
- 8
+ 0      0   1   2  63  61  59   A
+ 4      4   1   2  62  61  59   A
+ 8      
 12
 16
 20
