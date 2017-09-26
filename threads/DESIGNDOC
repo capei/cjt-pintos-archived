@@ -274,6 +274,18 @@ Comparing it with stack and queue, they are also easy to add/drop in regular seq
 /*
 
 
+thread_get_nice(void); /*   return the nice value of the current thread */
+
+thread_set_nice(int); /*    sets a new nice value for the current thread and recalculates priority based on the new nice value */
+
+priority = PRI_MAX - (recent_cpu / 4) - (nice * 2); /*  this should be the new value used to calclate priority */ 
+
+thread_get_recent_cpu (void); /* this should calculate the recent cpu for current thread */
+    recent_cpu = (2*load_avg)/(2*load_avg + 1) * recent_cpu + nice;
+
+
+thread_get_load_avg (void); /* this should calculate load avg time for the current thread */
+    load_avg = (59/60)*load_avg + (1/60)*ready_threads;
 
 */
 
@@ -287,8 +299,8 @@ Comparing it with stack and queue, they are also easy to add/drop in regular seq
 timer  recent_cpu    priority   thread
 ticks   A   B   C   A   B   C   to run
 -----  --  --  --  --  --  --   ------
- 0
- 4
+ 0      0   0   0  63  61  59   A
+ 4      
  8
 12
 16
