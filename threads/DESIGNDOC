@@ -242,7 +242,7 @@ The highest priority gets the lock.
 
 While priority donation occured, we have to change the priority of threads by using thread_set_priority() which the interrupt might happens.
 If we change it everytime when the priority donation occurs, the changed priority might turn out to be useless.
-So, to avoid this circumstance, we should calculate all of potential priority of threads which is expected to be part of priority donation.
+So, to avoid this circumstance, we should calculate all of possible priority of threads which is expected to be part of priority donation.
 Using the maxium priority from result of calculating can aviod the race.
 
 
